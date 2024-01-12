@@ -7,7 +7,11 @@ const cors = require('cors');
 api.use(express.json());
 api.use('/', users);
 
-api.use(cors());
+router.use(cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+  }));
 
 
 api.listen(3440, () => {
