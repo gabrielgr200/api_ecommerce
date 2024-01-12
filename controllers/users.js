@@ -5,11 +5,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
-router.use(cors({
-  origin: 'http://127.0.0.1:5500',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
-}));
+router.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
 
 router.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -17,6 +20,7 @@ router.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
 
 router.post("/register", async (req, res) => {
   const dados = req.body;
