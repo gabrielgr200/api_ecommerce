@@ -7,6 +7,8 @@ const cors = require('cors');
 api.use(express.json());
 api.use('/', users);
 
+const port = 3440;
+
 api.use(
   cors({
     origin: "*",
@@ -23,6 +25,6 @@ api.use((req, res, next) => {
   next();
 });
 
-api.listen(3440, () => {
-  console.log("teste: http://localhost:3440");
+api.listen(process.env.PORT || port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
 });
