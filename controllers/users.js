@@ -6,10 +6,17 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 
 router.use(cors({
-  origin: '*',
+  origin: 'http://127.0.0.1:5500',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: 'Content-Type,Authorization',
 }));
+
+router.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
 router.post("/register", async (req, res) => {
   const dados = req.body;
