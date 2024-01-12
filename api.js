@@ -7,13 +7,13 @@ const cors = require('cors');
 api.use(express.json());
 api.use('/', users);
 
-router.use(cors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
-  }));
+api.use(cors({
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+}));
 
 
 api.listen(3440, () => {
-    console.log("teste: http://localhost:3440");
+  console.log("teste: http://localhost:3440");
 });
