@@ -130,6 +130,160 @@ router.get("/user", async (req, res) => {
   }
 });
 
+router.post("/products", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+
+    try {
+      const decodedToken = jwt.verify(token, '8a2b1f8c4e7d5a0c3b6e9d7a2f4c#@$jhladmdfchvvsjhdf97849i363gdb334+!@$');
+
+      const user = await db.cadastro.findOne({
+        where: { id: decodedToken.userId },
+        attributes: ['id', 'name', 'email']
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          mensagem: "Usuário não encontrado"
+        });
+      }
+
+      const { name, price, quantity, image } = req.body;
+
+      const novoProduto = await db.products.create({
+        name,
+        price,
+        quantity,
+        image,
+        usersId: user.id,
+      });
+
+      return res.json({
+        mensagem: "Produto salvo com sucesso",
+        produto: novoProduto
+      });
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        return res.status(401).json({
+          mensagem: "Token expirado. Faça o login novamente."
+        });
+      } else if (err instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({
+          mensagem: "Token inválido"
+        });
+      }
+      throw err;
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      mensagem: "Erro ao salvar o produto"
+    });
+  }
+});
+
+router.get("/products", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+
+    try {
+      const decodedToken = jwt.verify(token, '8a2b1f8c4e7d5a0c3b6e9d7a2f4c#@$jhladmdfchvvsjhdf97849i363gdb334+!@$');
+
+      const user = await db.cadastro.findOne({
+        where: { id: decodedToken.userId },
+        attributes: ['id', 'name', 'email']
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          mensagem: "Usuário não encontrado"
+        });
+      }
+
+      const produtosDoUsuario = await db.products.findAll({
+        where: { usersId: user.id },
+        attributes: ['id', 'name', 'price', 'quantity', 'image'],
+      });
+
+      return res.json({
+        mensagem: "Lista de produtos do usuário",
+        produtos: produtosDoUsuario
+      });
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        return res.status(401).json({
+          mensagem: "Token expirado. Faça o login novamente."
+        });
+      } else if (err instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({
+          mensagem: "Token inválido"
+        });
+      }
+      throw err;
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      mensagem: "Erro ao obter a lista de produtos"
+    });
+  }
+});
+
+router.delete("/products/:productId", async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+
+    try {
+      const decodedToken = jwt.verify(token, '8a2b1f8c4e7d5a0c3b6e9d7a2f4c#@$jhladmdfchvvsjhdf97849i363gdb334+!@$');
+
+      const user = await db.cadastro.findOne({
+        where: { id: decodedToken.userId },
+        attributes: ['id', 'name', 'email']
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          mensagem: "Usuário não encontrado"
+        });
+      }
+
+      const productId = req.params.productId;
+
+      const deletedProduct = await db.products.destroy({
+        where: {
+          id: productId,
+          usersId: user.id,
+        },
+      });
+
+      if (!deletedProduct) {
+        return res.status(404).json({
+          mensagem: "Produto não encontrado ou não pertence ao usuário"
+        });
+      }
+
+      return res.json({
+        mensagem: "Produto excluído com sucesso"
+      });
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        return res.status(401).json({
+          mensagem: "Token expirado. Faça o login novamente."
+        });
+      } else if (err instanceof jwt.JsonWebTokenError) {
+        return res.status(401).json({
+          mensagem: "Token inválido"
+        });
+      }
+      throw err;
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      mensagem: "Erro ao excluir o produto"
+    });
+  }
+});
 
 router.post("/comentarios", async (req, res) => {
   try {
