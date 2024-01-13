@@ -314,6 +314,10 @@ router.delete("/user", async (req, res) => {
       });
     }
 
+    await db.comments.destroy({
+      where: { userId: decodedToken.userId },
+    });
+
     await user.destroy();
 
     return res.json({
